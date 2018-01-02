@@ -78,6 +78,7 @@
 
 \usepackage{graphicx} % Allows including images
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{listings}
 \usepackage[utf8x]{inputenc}   % omogoča uporabo slovenskih črk kodiranih v formatu UTF-8
 \usepackage[slovene]{babel}    % naloži, med drugim, slovenske delilne vzorce
 
@@ -118,7 +119,7 @@
 \subsection{Struktura imenika}
 \begin{frame}[shrink=28]
   \frametitle{Struktura imenika}
-  \begin{columns}[T]
+  \begin{columns}[c]
     \begin{column}{.5\textwidth}
       \includegraphics[width=\textwidth]{pics/tree.png}
     \end{column}
@@ -167,9 +168,178 @@
 \end{frame}
 
 %------------------------------------------------
+\section{Delovanje ukazov}
+%------------------------------------------------
+\subsection{Git init}
+\begin{frame}
+  \frametitle{Git init}
+  \begin{columns}[c]
+    \begin{column}{.5\textwidth}
+      \begin{block}{Git init (lokalno)}
+        \includegraphics[width=\textwidth]{pics/init.png}
+      \end{block}
+    \end{column}
+    \begin{column}{.5\textwidth}
+      \begin{block}{Git init --bare (oddaljeno)}
+        \includegraphics[width=\textwidth]{pics/init-bare.png}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\subsection{Git add}
+\begin{frame}
+  \frametitle{Git add}
+  \begin{columns}[c]
+    \begin{column}{.5\textwidth}
+      \emph{\$ touch test.txt}\\
+      \emph{\$ mkdir folder}\\
+      \emph{\$ touch folder/test2.txt}\\
+      \emph{\$ echo 'test line' $>$ test.txt}\\
+      \emph{\$ echo 'test line 2' $>$ folder/test2.txt}\\
+      \emph{\$ git add .}
+    \end{column}
+    \begin{column}{.5\textwidth}
+      Ustvari nova \emph{blob} objekta:
+      \includegraphics[width=\textwidth]{pics/add-tree.png}
+      Ki vsebujeta vsebino dodanih datotek:
+      \includegraphics[width=\textwidth]{pics/add-content.png}
+      V \emph{.git/index} se zapišejo dovoljenja, ime blob objekta in pot do
+      dodane datoteke:
+      \includegraphics[width=\textwidth]{pics/add-index.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\subsection{Git commit}
+\begin{frame}
+  \frametitle{Git commit}
+  \emph{\$ git commit -m 'Add test files'}
+  \begin{columns}[c]
+    \begin{column}{.5\textwidth}
+      \begin{enumerate}
+        \item Nova datoteka: \emph{.git/COMMIT\_EDITMSG}
+        \item Novi objekti: \emph{9353cde3, cf3d1dc4, 9c9f2d67}
+        \item Nova datoteka: \emph{.git/refs/heads/master}
+        \item Nova datoteka: \emph{.git/logs/refs/heads/master}
+      \end{enumerate}
+    \end{column}
+    \begin{column}{.5\textwidth}
+      Vsebina .git/COMMIT\_EDITMSG:
+      \includegraphics[width=\textwidth]{pics/commit-msg.png}
+      Vsebina .git/objects/:
+      \includegraphics[width=\textwidth]{pics/commit-tree.png}
+      Vsebina .git/refs/heads/master:
+      \includegraphics[width=\textwidth]{pics/commit-refs.png}
+    \end{column}
+  \end{columns}
+  Vsebina .git/logs/refs/heads/master:
+  \includegraphics[width=\textwidth]{pics/commit-log.png}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Git commit (nadaljevanje)}
+  Vsebina \emph{tree} objektov:
+  \includegraphics[width=\textwidth]{pics/commit-content-tree.png}
+  Vsebina \emph{commit} objektov:
+  \includegraphics[width=\textwidth]{pics/commit-content-commit.png}
+\end{frame}
+
+\subsection{Git branch}
+\begin{frame}
+  \frametitle{Git branch}
+  \emph{\$ git branch feature}
+  \newline
+  Novi datoteki: \emph{.git/refs/heads/feature} in \emph{.git/logs/refs/heads/feature}
+  \includegraphics[width=\textwidth]{pics/branch-refs.png}
+  \includegraphics[width=\textwidth]{pics/branch-logs.png}
+\end{frame}
+
+\subsection{Git push}
+\begin{frame}
+  \frametitle{Git push (lokalno)}
+  \emph{\$ git remote add origin $\sim$/projects/tmp/git-remote}\\
+  \emph{\$ git push -u origin master}
+  \newline
+  \begin{columns}[c]
+    \begin{column}{.5\textwidth}
+      V \emph{.git/config} se zapišejo podatki o oddaljeni veji:
+      \includegraphics[width=\textwidth]{pics/push-remote.png}
+      \includegraphics[width=\textwidth]{pics/push-branch.png}
+    \end{column}
+    \begin{column}{.5\textwidth}
+      Novi datoteki:
+      \includegraphics[width=.8\textwidth]{pics/push-tree.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Git push (oddaljeno)}
+  \includegraphics[width=.5\textwidth]{pics/push-remote-tree.png}
+\end{frame}
+
+\subsection{Git fetch}
+\begin{frame}[shrink=20]
+  \frametitle{Git fetch (priprava)}
+  \emph{\$ git clone $\sim$/projects/tmp/git-remote $\sim$/projects/tmp/git-clone}\\
+  \emph{\$ echo 'test fetch' $>>$ test.txt}\\
+  \emph{\$ git add .}\\
+  \emph{\$ git commit -m 'Add new line to test.txt'}\\
+  \emph{\$ git push origin master}
+  \newline
+  \begin{columns}[c]
+    \begin{column}{.5\textwidth}
+      \includegraphics[width=\textwidth]{pics/fetch-prep.png}
+    \end{column}
+    \begin{column}{.5\textwidth}
+      \includegraphics[width=\textwidth]{pics/fetch-prep-blob.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Git fetch}
+  \emph{\$ git fetch}
+  \newline
+  \begin{columns}[c]
+    \begin{column}{.5\textwidth}
+      Prenesejo se novi objekti z oddaljenega skladišča:
+      \includegraphics[width=\textwidth]{pics/fetch-prep.png}
+    \end{column}
+    \begin{column}{.5\textwidth}
+      Datoteka \emph{.git/refs/remotes/origin/master} vsebuje referenco na
+      najnovejši \emph{commit}:
+      \includegraphics[width=\textwidth]{pics/fetch-refs.png}
+    \end{column}
+  \end{columns}
+  Ustvari se tudi datoteka \emph{.git/FETCH\_HEAD}:
+  \includegraphics[width=\textwidth]{pics/fetch-head.png}
+\end{frame}
+
+\subsection{Git merge}
+\begin{frame}
+  \frametitle{Git merge (fast-forward)}
+  \emph{\$ git merge origin/master}
+  \newline
+  Preprosto nastavi \emph{.git/refs/heads/master} na isti \emph{commit}, kot je
+  v \emph{.git/refs/remotes/origin/master}:
+  \includegraphics[width=\textwidth]{pics/merge-ff.png}
+\end{frame}
+
+\begin{frame}[shrink=20]
+  \frametitle{Git merge (--no-ff)}
+  \emph{git-clone \$ echo 'test merge --no-ff' $>>$ test.txt}\\
+  \emph{git-clone \$ git add . \&\& git commit -m 'Add line to test merge --no-ff'}\\
+  \emph{git-clone \$ git push origin master}\\
+  \emph{git \$ git fetch}\\
+  \emph{git \$ git merge --no-ff origin/master}
+  \newline
+  \includegraphics[width=.4\textwidth]{pics/merge-no-ff.png}
+\end{frame}
 
 %------------------------------------------------
-\section{Zaključek}
+\section{Viri}
 %------------------------------------------------
 
 \begin{frame}
@@ -192,12 +362,6 @@
     \newblock [Dostopano: 30.12.2017]
 \end{thebibliography}
 }
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\Huge{\centerline{Vprašanja?}}
 \end{frame}
 
 %------------------------------------------------
